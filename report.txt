@@ -1,0 +1,62 @@
+Starting diagnostics at 2025-07-14 19:29:24
+
+===== System Information =====
+Operating System: Linux
+Platform: Linux-6.8.0-1027-azure-x86_64-with-glibc2.39
+Architecture: ('64bit', 'ELF')
+Machine: x86_64
+Processor: x86_64
+Total RAM: 7.75 GB
+Available RAM: 2.15 GB
+Free Disk Space: 14.72 GB
+
+===== File System Information =====
+Current Directory: /workspaces/action
+Write permission: OK
+
+Files in Parent Directory:
+ - .codespaces
+ - .oryx
+ - action
+
+===== Git Repository Information =====
+Git Repository Root: /workspaces/action
+Current Commit: b7e5e52836f9e8c7b1698cdb666a26279861f995
+Remote Origin: https://github.com/ed-donner/action
+
+===== Environment File Check =====
+.env file exists at: /workspaces/action/.env
+OPENAI_API_KEY found in .env file
+
+===== Virtualenv Check =====
+ERROR: Virtualenv check failed: expected str, bytes or os.PathLike object, not NoneType
+
+===== Network Connectivity Check =====
+SSL Version: OpenSSL 3.0.13 30 Jan 2024
+ERROR: Required packages are not installed. Please install them using 'pip install requests speedtest-cli'
+
+===== Environment Variables Check =====
+
+PYTHONPATH is not set, as expected.
+
+Python sys.path:
+ - /workspaces/action/setup
+ - /usr/local/python/3.12.1/lib/python312.zip
+ - /usr/local/python/3.12.1/lib/python3.12
+ - /usr/local/python/3.12.1/lib/python3.12/lib-dynload
+ - /home/codespace/.local/lib/python3.12/site-packages
+ - /usr/local/python/3.12.1/lib/python3.12/site-packages
+ERROR: Environment variables check failed: No module named 'dotenv'
+
+===== Additional Diagnostics =====
+Temp directory is writable: /tmp
+
+===== Errors Found =====
+The following critical issues were detected. Please address them before proceeding:
+- Virtualenv check failed: expected str, bytes or os.PathLike object, not NoneType
+- Required packages are not installed. Please install them using 'pip install requests speedtest-cli'
+- Environment variables check failed: No module named 'dotenv'
+
+
+Completed diagnostics at 2025-07-14 19:29:24
+
