@@ -29,5 +29,5 @@ def researcher_mcp_server_params(name: str):
     return [
         {"command": "uvx", "args": ["mcp-server-fetch"]},
         {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-brave-search"], "env": brave_env},
-        {"command": "npx", "args": ["-y", "mcp-memory-libsql"], "env": {"LIBSQL_URL": f"file:./memory/{name}.db"}}
+        {"command": "uv", "args": ["run", "memory_server_inmemory.py"], "env": {"MEMORY_NAME": name}}
     ]

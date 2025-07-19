@@ -91,9 +91,9 @@ class Trader:
 
     async def run_with_mcp_servers(self):
         async with AsyncExitStack() as stack:
-            trader_mcp_servers = [await stack.enter_async_context(MCPServerStdio(params, client_session_timeout_seconds=120)) for params in trader_mcp_server_params]
+            trader_mcp_servers = [await stack.enter_async_context(MCPServerStdio(params, client_session_timeout_seconds=180)) for params in trader_mcp_server_params]
             async with AsyncExitStack() as stack:
-                researcher_mcp_servers = [await stack.enter_async_context(MCPServerStdio(params, client_session_timeout_seconds=120)) for params in researcher_mcp_server_params(self.name)]
+                researcher_mcp_servers = [await stack.enter_async_context(MCPServerStdio(params, client_session_timeout_seconds=180)) for params in researcher_mcp_server_params(self.name)]
                 await self.run_agent(trader_mcp_servers, researcher_mcp_servers)
     
     async def run_with_trace(self):
