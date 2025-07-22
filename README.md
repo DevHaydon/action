@@ -23,6 +23,8 @@ We are using the fantastic uv platform and setup should be relatively painless!
 - Windows people, your instructions are [here](setup/SETUP-PC.md)
 - Mac people, yours are [here](setup/SETUP-mac.md)
 - Linux people, yours are [here](setup/SETUP-linux.md)
+- Codex users can run [`setup/setup_codex.sh`](setup/setup_codex.sh) to install
+  dependencies and the CrewAI CLI automatically.
 
 ### Then for CrewAI Setup:
 
