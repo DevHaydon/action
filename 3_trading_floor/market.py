@@ -5,6 +5,7 @@ from datetime import datetime
 import random
 from database import write_market, read_market
 from functools import lru_cache
+from logger import log_exception
 
 load_dotenv(override=True)
 
@@ -57,5 +58,6 @@ def get_share_price(symbol) -> float:
         try:
             return get_share_price_polygon(symbol)
         except Exception as e:
+            log_exception("market", e, "Polygon API error")
             print(f"Was not able to use the polygon API due to {e}; using a random number")
     return float(random.randint(1, 100))
