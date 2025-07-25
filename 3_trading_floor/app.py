@@ -97,10 +97,27 @@ class TraderView:
         self.chart = None
         self.holdings_table = None
         self.transactions_table = None
+        self.timer = None
+        self.interval_slider = None
+        self.model_dropdown = None
+        self.title = None
 
     def make_ui(self):
         with gr.Column():
-            gr.HTML(self.trader.get_title())
+            self.title = gr.HTML(self.trader.get_title())
+            with gr.Row():
+                self.model_dropdown = gr.Dropdown(
+                    choices=short_model_names,
+                    value=self.trader.model_name,
+                    label="Model",
+                )
+                self.interval_slider = gr.Slider(
+                    minimum=10,
+                    maximum=300,
+                    step=10,
+                    value=120,
+                    label="Refresh (s)",
+                )
             with gr.Row():
                 self.portfolio_value = gr.HTML(self.trader.get_portfolio_value())
             with gr.Row():
@@ -129,14 +146,40 @@ class TraderView:
                 )
             
 
-        timer = gr.Timer(value=120)
-        timer.tick(fn=self.refresh, inputs=[], outputs=[self.portfolio_value, self.chart, self.holdings_table, self.transactions_table], show_progress="hidden", queue=False)
+        self.timer = gr.Timer(value=120)
+        self.timer.tick(
+            fn=self.refresh,
+            inputs=[],
+            outputs=[self.portfolio_value, self.chart, self.holdings_table, self.transactions_table],
+            show_progress="hidden",
+            queue=False,
+        )
+        self.interval_slider.change(
+            lambda x: gr.update(value=x),
+            inputs=self.interval_slider,
+            outputs=self.timer,
+        )
+        self.model_dropdown.change(
+            self.update_model,
+            inputs=self.model_dropdown,
+            outputs=self.title,
+        )
         log_timer = gr.Timer(value=0.5)
-        log_timer.tick(fn=self.trader.get_logs, inputs=[self.log], outputs=[self.log], show_progress="hidden", queue=False)
+        log_timer.tick(
+            fn=self.trader.get_logs,
+            inputs=[self.log],
+            outputs=[self.log],
+            show_progress="hidden",
+            queue=False,
+        )
 
     def refresh(self):
         self.trader.reload()
         return self.trader.get_portfolio_value(), self.trader.get_portfolio_value_chart(), self.trader.get_holdings_df(), self.trader.get_transactions_df()
+
+    def update_model(self, model_name):
+        self.trader.model_name = model_name
+        return self.trader.get_title()
 
 # Main UI construction
 def create_ui():
