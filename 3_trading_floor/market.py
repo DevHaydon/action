@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Dict
 from database import write_market, read_market
 from functools import lru_cache
+from logger import log_exception
 
 load_dotenv(override=True)
 
@@ -79,3 +80,4 @@ def get_share_price(symbol) -> float:
         except Exception as e:
             print(f"Was not able to use the polygon API due to {e}; using cached value")
     return _get_cached_price(symbol)
+            log_exception("market", e, "Polygon API error")
