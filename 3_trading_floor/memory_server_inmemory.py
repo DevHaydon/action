@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+from logger import log_exception
 
 # Minimal in-memory key-value store for demonstration
 memory = {}
@@ -31,6 +32,7 @@ try:
             else:
                 print(json.dumps({"error": "unknown action"}))
         except Exception as e:
+            log_exception(MEMORY_NAME, e, "memory server error")
             print(json.dumps({"error": str(e)}))
         sys.stdout.flush()
 except KeyboardInterrupt:
