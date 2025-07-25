@@ -2,7 +2,7 @@ from polygon import RESTClient
 from dotenv import load_dotenv
 import os
 from datetime import datetime
-import random
+from typing import Dict
 from database import write_market, read_market
 from functools import lru_cache
 
@@ -13,6 +13,9 @@ polygon_plan = os.getenv("POLYGON_PLAN")
 
 is_paid_polygon = polygon_plan == "paid"
 is_realtime_polygon = polygon_plan == "realtime"
+
+# simple in-memory cache of latest successful prices
+price_cache: Dict[str, float] = {}
 
 def is_market_open() -> bool:
     client = RESTClient(polygon_api_key)
@@ -52,10 +55,27 @@ def get_share_price_polygon(symbol) -> float:
     else:
         return get_share_price_polygon_eod(symbol)
 
+
+def _get_cached_price(symbol: str) -> float:
+    """Return the last known price for ``symbol`` from memory or today's DB."""
+    if symbol in price_cache:
+        return price_cache[symbol]
+
+    today = datetime.now().date().strftime("%Y-%m-%d")
+    market_data = read_market(today)
+    if market_data:
+        price = market_data.get(symbol)
+        if price is not None:
+            price_cache[symbol] = price
+            return price
+    return 0.0
+
 def get_share_price(symbol) -> float:
     if polygon_api_key:
         try:
-            return get_share_price_polygon(symbol)
+            price = get_share_price_polygon(symbol)
+            price_cache[symbol] = price
+            return price
         except Exception as e:
-            print(f"Was not able to use the polygon API due to {e}; using a random number")
-    return float(random.randint(1, 100))
+            print(f"Was not able to use the polygon API due to {e}; using cached value")
+    return _get_cached_price(symbol)
