@@ -9,6 +9,7 @@ import json
 from agents.mcp import MCPServerStdio
 from templates import researcher_instructions, trader_instructions, trade_message, rebalance_message, research_tool
 from mcp_params import trader_mcp_server_params, researcher_mcp_server_params
+from logger import log_exception
 load_dotenv(override=True)
 
 deepseek_api_key = os.getenv("DEEPSEEK_API_KEY")
@@ -106,6 +107,7 @@ class Trader:
         try:
             await self.run_with_trace()
         except Exception as e:
+            log_exception(self.name, e, "Error running trader")
             print(f"Error running trader {self.name}: {e}")
         self.do_trade = not self.do_trade
 
