@@ -54,6 +54,18 @@ class AccountOperationsTest(unittest.TestCase):
         # Expected small negative due to spread costs
         self.assertAlmostEqual(pnl, -3.0, places=1)
 
+    def test_max_order_size_enforced(self):
+        with patch('accounts.MAX_ORDER_SIZE', 5):
+            with self.assertRaises(ValueError):
+                self.account.buy_shares('AAPL', 6, 'too big')
+
+    def test_daily_trade_limit_enforced(self):
+        with patch('accounts.DAILY_TRADE_LIMIT', 2), patch('accounts.MAX_ORDER_SIZE', 100):
+            self.account.buy_shares('AAPL', 1, 't1')
+            self.account.sell_shares('AAPL', 1, 't2')
+            with self.assertRaises(ValueError):
+                self.account.buy_shares('AAPL', 1, 't3')
+
 
 if __name__ == '__main__':
     unittest.main()
