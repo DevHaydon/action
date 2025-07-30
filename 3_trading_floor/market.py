@@ -1,6 +1,7 @@
 from polygon import RESTClient
 from dotenv import load_dotenv
 import os
+import random
 from datetime import datetime
 from typing import Dict
 from database import write_market, read_market
@@ -79,5 +80,12 @@ def get_share_price(symbol) -> float:
             return price
         except Exception as e:
             print(f"Was not able to use the polygon API due to {e}; using cached value")
-    return _get_cached_price(symbol)
             log_exception("market", e, "Polygon API error")
+            cached = _get_cached_price(symbol)
+            if cached:
+                return cached
+            return float(random.randint(1, 100))
+    cached = _get_cached_price(symbol)
+    if cached:
+        return cached
+    return float(random.randint(1, 100))
