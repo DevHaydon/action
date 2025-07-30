@@ -1,6 +1,7 @@
 from polygon import RESTClient
 from dotenv import load_dotenv
 import os
+import random
 from datetime import datetime
 from typing import Dict
 from database import write_market, read_market
@@ -80,6 +81,7 @@ def get_share_price(symbol, retries: int = 2) -> float:
     logged for monitoring.
     """
     if polygon_api_key:
+
         for attempt in range(retries + 1):
             try:
                 price = get_share_price_polygon(symbol)
