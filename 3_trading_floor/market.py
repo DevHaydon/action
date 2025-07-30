@@ -7,6 +7,7 @@ from typing import Dict
 from database import write_market, read_market
 from functools import lru_cache
 from logger import log_exception
+import time
 
 load_dotenv(override=True)
 
@@ -72,20 +73,22 @@ def _get_cached_price(symbol: str) -> float:
             return price
     return 0.0
 
-def get_share_price(symbol) -> float:
+def get_share_price(symbol, retries: int = 2) -> float:
+    """Return the latest share price for ``symbol``.
+
+    Attempts to fetch the price from Polygon up to ``retries`` + 1 times
+    before falling back to cached data. Any exceptions raised by the API are
+    logged for monitoring.
+    """
     if polygon_api_key:
-        try:
-            price = get_share_price_polygon(symbol)
-            price_cache[symbol] = price
-            return price
-        except Exception as e:
-            print(f"Was not able to use the polygon API due to {e}; using cached value")
-            log_exception("market", e, "Polygon API error")
-            cached = _get_cached_price(symbol)
-            if cached:
-                return cached
-            return float(random.randint(1, 100))
-    cached = _get_cached_price(symbol)
-    if cached:
-        return cached
-    return float(random.randint(1, 100))
+
+        for attempt in range(retries + 1):
+            try:
+                price = get_share_price_polygon(symbol)
+                price_cache[symbol] = price
+                return price
+            except Exception as e:
+                log_exception("market", e, "Polygon API error")
+                if attempt < retries:
+                    time.sleep(0.1)
+    return _get_cached_price(symbol)
